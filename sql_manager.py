@@ -63,3 +63,13 @@ class SqlManager:
             return self.execute_sql_query(f'SELECT {select} FROM {from_} {where_}', list(where_conditions.values()))
 
         return self.execute_sql_query(f'SELECT {select} FROM {from_}')
+
+    def delete(self, from_: str, **where_conditions: str) -> List[Tuple[Any, ...]]:
+        if len(where_conditions):
+            where_ = 'WHERE '
+            for where_condition in where_conditions:
+                where_ += f"{where_condition}=? AND "
+            where_ = where_[:-5]
+            return self.execute_sql_query(f'DELETE FROM {from_} {where_}', list(where_conditions.values()))
+
+        return self.execute_sql_query(f'DELETE FROM {from_}')
