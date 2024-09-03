@@ -44,3 +44,12 @@ class SqlManager:
         table_data = fields_as_str if foreign_keys is None else f'{fields_as_str}, {foreign_keys_as_str}'
 
         return self.execute_sql_query(f'CREATE TABLE IF NOT EXISTS {table_name}({table_data})')
+
+    def insert(self, table_name: str, values: list) -> List[Tuple[Any, ...]]:
+        values_as_str_params = ""
+
+        for _ in values:
+            values_as_str_params += f'?, '
+        values_as_str_params = values_as_str_params[:-2]
+
+        return self.execute_sql_query(f'INSERT INTO {table_name} VALUES ({values_as_str_params})', values)
