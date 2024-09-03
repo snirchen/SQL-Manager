@@ -53,3 +53,13 @@ class SqlManager:
         values_as_str_params = values_as_str_params[:-2]
 
         return self.execute_sql_query(f'INSERT INTO {table_name} VALUES ({values_as_str_params})', values)
+
+    def select(self, select: str, from_: str, **where_conditions: str) -> List[Tuple[Any, ...]]:
+        if len(where_conditions):
+            where_ = 'WHERE '
+            for where_condition in where_conditions:
+                where_ += f"{where_condition}=? AND "
+            where_ = where_[:-5]
+            return self.execute_sql_query(f'SELECT {select} FROM {from_} {where_}', list(where_conditions.values()))
+
+        return self.execute_sql_query(f'SELECT {select} FROM {from_}')
