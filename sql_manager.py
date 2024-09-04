@@ -76,9 +76,6 @@ class SqlManager:
         else:
             self.execute_sql_query(f'DELETE FROM {from_}')
 
-    def drop_table(self, table_name: str, throw_if_not_exists: bool = True) -> None:
-        self.execute_sql_query(f"DROP TABLE {'' if throw_if_not_exists else 'IF EXISTS '}{table_name};")
-
     def update(self, table_name: str, updated_rows: dict, **where_conditions: str) -> None:
         update_ = 'SET ' if len(updated_rows) else ''
         for key in updated_rows:
@@ -94,4 +91,8 @@ class SqlManager:
             self.execute_sql_query(f'UPDATE {table_name} {update_} {where_}',
                                    list(updated_rows.values()) + list(where_conditions.values()))
         else:
-            self.execute_sql_query(f'UPDATE {table_name} {update_}', list(updated_rows.values()) + list(where_conditions.values()))
+            self.execute_sql_query(f'UPDATE {table_name} {update_}',
+                                   list(updated_rows.values()) + list(where_conditions.values()))
+
+    def drop_table(self, table_name: str, throw_if_not_exists: bool = True) -> None:
+        self.execute_sql_query(f"DROP TABLE {'' if throw_if_not_exists else 'IF EXISTS '}{table_name};")
