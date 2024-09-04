@@ -1,10 +1,11 @@
 import sqlite3
 import threading
+from pathlib import Path
 from typing import Tuple, Any, List
 
 
 class SqlManager:
-    def __init__(self, db):
+    def __init__(self, db: Path):
         self.mutex = threading.Lock()
         self.db = db
 
