@@ -80,7 +80,7 @@ sql_manager.update('messages', {'Content': 'Edited message content'}, ID=MESSAGE
 sql_manager.delete(from_="messages", ID=MESSAGE_1_UUID)
 
 # Drop table
-sql_manager.drop_table('imaginary_table', throw_if_not_exists=False)
+sql_manager.drop_table("messages")
 ```
 
 ## Contributions 👥
