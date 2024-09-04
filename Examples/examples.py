@@ -1,3 +1,4 @@
+import sqlite3
 import uuid
 from pathlib import Path
 
@@ -64,6 +65,15 @@ def main() -> None:
     sql_manager.delete(from_="messages", ID=MESSAGE_1_UUID)
     print("Select all messages after deleted MESSAGE_1:")
     print(sql_manager.select(select='*', from_="messages"))
+
+    try:
+        sql_manager.drop_table('imaginary_table', throw_if_not_exists=True)
+    except sqlite3.OperationalError as e:
+        print(f'Caught an expected exception: "{e}"')
+    sql_manager.drop_table('imaginary_table', throw_if_not_exists=False)
+
+    sql_manager.drop_table("messages")
+    sql_manager.drop_table("clients")
 
 
 if __name__ == '__main__':

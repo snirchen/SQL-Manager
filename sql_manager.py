@@ -75,3 +75,6 @@ class SqlManager:
             self.execute_sql_query(f'DELETE FROM {from_} {where_}', list(where_conditions.values()))
         else:
             self.execute_sql_query(f'DELETE FROM {from_}')
+
+    def drop_table(self, table_name: str, throw_if_not_exists: bool = True) -> None:
+        self.execute_sql_query(f"DROP TABLE {'' if throw_if_not_exists else 'IF EXISTS '}{table_name};")
