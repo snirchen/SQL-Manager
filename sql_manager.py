@@ -25,8 +25,10 @@ class SqlManager:
         finally:
             self.mutex.release()
 
-    def create_table_if_not_exists(self, table_name: str, fields: dict = None,
-                                   foreign_keys: dict = None) -> List[Tuple[Any, ...]]:
+    def create_table(self, table_name: str,
+                     fields: dict = None,
+                     foreign_keys: dict = None,
+                     throw_if_exists: bool = True) -> List[Tuple[Any, ...]]:
         fields_as_str = ''
         foreign_keys_as_str = ''
 
@@ -42,7 +44,8 @@ class SqlManager:
 
         table_data = fields_as_str if foreign_keys is None else f'{fields_as_str}, {foreign_keys_as_str}'
 
-        return self.execute_sql_query(f'CREATE TABLE IF NOT EXISTS {table_name}({table_data})')
+        query = f'CREATE TABLE {"" if throw_if_exists else "IF NOT EXISTS "}{table_name}({table_data})'
+        return self.execute_sql_query(query)
 
     def insert(self, table_name: str, values: list) -> List[Tuple[Any, ...]]:
         values_as_str_params = ""
