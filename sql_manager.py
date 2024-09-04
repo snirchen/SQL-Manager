@@ -78,3 +78,20 @@ class SqlManager:
 
     def drop_table(self, table_name: str, throw_if_not_exists: bool = True) -> None:
         self.execute_sql_query(f"DROP TABLE {'' if throw_if_not_exists else 'IF EXISTS '}{table_name};")
+
+    def update(self, table_name: str, updated_rows: dict, **where_conditions: str) -> None:
+        update_ = 'SET ' if len(updated_rows) else ''
+        for key in updated_rows:
+            update_ += f"{key}=?, "
+        if len(update_):
+            update_ = update_[:-2]
+
+        if len(where_conditions):
+            where_ = 'WHERE '
+            for where_condition in where_conditions:
+                where_ += f"{where_condition}=? AND "
+            where_ = where_[:-5]
+            self.execute_sql_query(f'UPDATE {table_name} {update_} {where_}',
+                                   list(updated_rows.values()) + list(where_conditions.values()))
+        else:
+            self.execute_sql_query(f'UPDATE {table_name} {update_}', list(updated_rows.values()) + list(where_conditions.values()))

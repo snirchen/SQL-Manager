@@ -55,23 +55,26 @@ def main() -> None:
     print("Select all clients:")
     print(f"{sql_manager.select(select='*', from_='clients')}\n")
 
-    print("Select content of each message:")
-    print(sql_manager.select(select='Content', from_="messages", FromClient=CLIENT_1_UUID))
-    print(sql_manager.select(select='Content', from_="messages", FromClient=CLIENT_2_UUID))
+    print("Select content of MESSAGE_1:")
+    print(f'{sql_manager.select(select="Content", from_="messages", ID=MESSAGE_1_UUID)}\n')
 
-    print("\nSelect all messages:")
+    sql_manager.update('messages', {'Content': 'Edited message content'}, ID=MESSAGE_1_UUID)
+
+    print("Select content of MESSAGE_1 after it was edited:")
+    print(f'{sql_manager.select(select="Content", from_="messages", ID=MESSAGE_1_UUID)}\n')
+
+    print("Select all messages:")
     print(f"{sql_manager.select(select='*', from_='messages')}\n")
 
     sql_manager.delete(from_="messages", ID=MESSAGE_1_UUID)
     print("Select all messages after deleted MESSAGE_1:")
-    print(sql_manager.select(select='*', from_="messages"))
+    print(f'{sql_manager.select(select="*", from_="messages")}\n')
 
     try:
         sql_manager.drop_table('imaginary_table', throw_if_not_exists=True)
     except sqlite3.OperationalError as e:
         print(f'Caught an expected exception: "{e}"')
     sql_manager.drop_table('imaginary_table', throw_if_not_exists=False)
-
     sql_manager.drop_table("messages")
     sql_manager.drop_table("clients")
 
