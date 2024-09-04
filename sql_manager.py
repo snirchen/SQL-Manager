@@ -22,8 +22,6 @@ class SqlManager:
             con.commit()
             con.close()
             return result
-        except Exception as e:  # noqa
-            return []
         finally:
             self.mutex.release()
 
