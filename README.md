@@ -29,7 +29,14 @@ This project provides a robust framework for securely managing SQL queries by wr
 3. Wrap your SQL queries with provided functions to ensure security and thread safety (see examples section).
 
 ## Examples 🔍
-# TODO: FILL_LATER
+```python
+    sql_manager.create_table(table_name="clients",
+                             fields={
+                                 'ID': 'text NOT NULL PRIMARY KEY',
+                                 'Name': 'varchar(255)'
+                             },
+                             throw_if_exists=False)
+```
 
 ## Contributions 👥
 Contributions are welcome!
