@@ -28,7 +28,7 @@ class SqlManager:
     def create_table(self, table_name: str,
                      fields: dict = None,
                      foreign_keys: dict = None,
-                     throw_if_exists: bool = True) -> List[Tuple[Any, ...]]:
+                     throw_if_exists: bool = True) -> None:
         fields_as_str = ''
         foreign_keys_as_str = ''
 
@@ -45,7 +45,7 @@ class SqlManager:
         table_data = fields_as_str if foreign_keys is None else f'{fields_as_str}, {foreign_keys_as_str}'
 
         query = f'CREATE TABLE {"" if throw_if_exists else "IF NOT EXISTS "}{table_name}({table_data})'
-        return self.execute_sql_query(query)
+        self.execute_sql_query(query)
 
     def insert(self, table_name: str, values: list) -> List[Tuple[Any, ...]]:
         values_as_str_params = ""
