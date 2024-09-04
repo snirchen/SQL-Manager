@@ -9,7 +9,7 @@ class SqlManager:
         self.mutex = threading.Lock()
         self.db = db
 
-    def execute_sql_query(self, query, parameters=None) -> List[Tuple[Any, ...]]:
+    def __execute_sql_query(self, query, parameters=None) -> List[Tuple[Any, ...]]:
         try:
             self.mutex.acquire()
             con = sqlite3.connect(self.db)
@@ -45,7 +45,7 @@ class SqlManager:
         table_data = fields_as_str if foreign_keys is None else f'{fields_as_str}, {foreign_keys_as_str}'
 
         query = f'CREATE TABLE {"" if throw_if_exists else "IF NOT EXISTS "}{table_name}({table_data})'
-        self.execute_sql_query(query)
+        self.__execute_sql_query(query)
 
     def insert(self, table_name: str, values: list) -> None:
         values_as_str_params = ""
@@ -54,7 +54,7 @@ class SqlManager:
             values_as_str_params += f'?, '
         values_as_str_params = values_as_str_params[:-2]
 
-        self.execute_sql_query(f'INSERT INTO {table_name} VALUES ({values_as_str_params})', values)
+        self.__execute_sql_query(f'INSERT INTO {table_name} VALUES ({values_as_str_params})', values)
 
     def select(self, select: str, from_: str, **where_conditions: str) -> List[Tuple[Any, ...]]:
         if len(where_conditions):
@@ -62,9 +62,9 @@ class SqlManager:
             for where_condition in where_conditions:
                 where_ += f"{where_condition}=? AND "
             where_ = where_[:-5]
-            return self.execute_sql_query(f'SELECT {select} FROM {from_} {where_}', list(where_conditions.values()))
+            return self.__execute_sql_query(f'SELECT {select} FROM {from_} {where_}', list(where_conditions.values()))
 
-        return self.execute_sql_query(f'SELECT {select} FROM {from_}')
+        return self.__execute_sql_query(f'SELECT {select} FROM {from_}')
 
     def delete(self, from_: str, **where_conditions: str) -> None:
         if len(where_conditions):
@@ -72,9 +72,9 @@ class SqlManager:
             for where_condition in where_conditions:
                 where_ += f"{where_condition}=? AND "
             where_ = where_[:-5]
-            self.execute_sql_query(f'DELETE FROM {from_} {where_}', list(where_conditions.values()))
+            self.__execute_sql_query(f'DELETE FROM {from_} {where_}', list(where_conditions.values()))
         else:
-            self.execute_sql_query(f'DELETE FROM {from_}')
+            self.__execute_sql_query(f'DELETE FROM {from_}')
 
     def update(self, table_name: str, updated_rows: dict, **where_conditions: str) -> None:
         update_ = 'SET ' if len(updated_rows) else ''
@@ -88,11 +88,11 @@ class SqlManager:
             for where_condition in where_conditions:
                 where_ += f"{where_condition}=? AND "
             where_ = where_[:-5]
-            self.execute_sql_query(f'UPDATE {table_name} {update_} {where_}',
-                                   list(updated_rows.values()) + list(where_conditions.values()))
+            self.__execute_sql_query(f'UPDATE {table_name} {update_} {where_}',
+                                     list(updated_rows.values()) + list(where_conditions.values()))
         else:
-            self.execute_sql_query(f'UPDATE {table_name} {update_}',
-                                   list(updated_rows.values()) + list(where_conditions.values()))
+            self.__execute_sql_query(f'UPDATE {table_name} {update_}',
+                                     list(updated_rows.values()) + list(where_conditions.values()))
 
     def drop_table(self, table_name: str, throw_if_not_exists: bool = True) -> None:
-        self.execute_sql_query(f"DROP TABLE {'' if throw_if_not_exists else 'IF EXISTS '}{table_name};")
+        self.__execute_sql_query(f"DROP TABLE {'' if throw_if_not_exists else 'IF EXISTS '}{table_name};")
